@@ -3,14 +3,15 @@ from psycopg2 import sql
 
 # Definindo os parâmetros de conexão
 conexao = None
+
 try:
     # Criando a conexão
     conexao = psycopg2.connect(
-        host="localhost",      # Ou IP do servidor PostgreSQL
-        database="BIGDATA",  # Nome do banco de dados
+        host="localhost",   # Ou IP do servidor PostgreSQL
+        database="BIGDATA", # Nome do banco de dados
         user="postgres",    # Nome de usuário
-        password="admin",# Senha do usuário
-        port="5432"            # Porta padrão do PostgreSQL
+        password="admin",   # Senha do usuário
+        port="5432"         # Porta padrão do PostgreSQL
     )
 
     # Criando um cursor para executar comandos SQL
@@ -23,7 +24,8 @@ try:
             item VARCHAR(255),
             quantidade INT,
             valor_total DECIMAL(10, 2),
-            percentual DECIMAL(5, 2)
+            percentual DECIMAL(5, 2),
+            mes VARCHAR(12)
         );
     ''')
 

@@ -1,43 +1,28 @@
-import psycopg2
 import pandas as pd
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-# Caminho para o arquivo CSV
-csv_file_path = 'storage/sua_planilha_sem_acento.csv'
+# Definir os dados de conexão com o banco de dados (PostgreSQL como exemplo)
+DATABASE_URL = 'postgresql://postgres:admin@localhost/BIGDATA'
 
-# Ler o CSV com pandas usando 'latin-1' para evitar erros de codificação
-df = pd.read_csv(csv_file_path,  encoding="utf-8", sep = ',')
+# Criar engine de conexão
+engine = create_engine(DATABASE_URL)
 
-print(df.head())
+# Criar sessão
+Session = sessionmaker(bind=engine)
+session = Session()
 
-# Conectar ao PostgreSQL
-try:
-    # Criando a conexão
-    conn = psycopg2.connect(
-        host="localhost",      # Ou IP do servidor PostgreSQL
-        database="BIGDATA",  # Nome do banco de dados
-        user="postgres",    # Nome de usuário
-        password="admin",# Senha do usuário
-        port="5432"            # Porta padrão do PostgreSQL
-    )
-    
-    cursor = conn.cursor()
-    print("Conexão ao banco de dados estabelecida com sucesso.")
+# Passo 1: Ler o arquivo CSV
+# dtype={'Quantidade': 'int64', 'Valor Total': 'int64', 'Percentual': 'int64'}
+df = pd.read_csv('storage/JunhoRosa.csv') 
 
-    # Inserir os dados do DataFrame no banco de dados
-    for index, row in df.iterrows():
-        cursor.execute('''
-            INSERT INTO produtos_vendas (item, quantidade, valor_total, percentual)
-            VALUES (%s, %s, %s, %s);
-        ''', (row['Itens'], row['Quantidade'], row['Valor Total'], row['Percentual']))
+# Passo 2: Inserir os dados no banco de dados usando SQLAlchemy
+df.to_sql('produtos_vendas', con=engine, if_exists='append', index=False)
 
-    # Fazer commit das inserções
-    conn.commit()
-    print(f"{len(df)} registros inseridos no banco de dados.")
+# Confirmar a inserção
+session.commit()
 
-    # Fechar cursor e conexão
-    cursor.close()
-    conn.close()
-    print("Conexão fechada.")
+# Fechar a sessão
+session.close()
 
-except Exception as error:
-    print(f"Erro ao conectar ou inserir dados: {error}")
+print("Dados inseridos com sucesso no banco de dados!")

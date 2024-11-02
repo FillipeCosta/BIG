@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "outubrovermelho"
+version = "0.1.0"
+description = ""
+authors = ["FILLIPE COSTA XAVIER MONTEIRO <106326971+FillipeCosta@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+spark = "^0.2.1"
+jupyterlab = "^4.2.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
